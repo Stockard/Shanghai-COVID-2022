@@ -6,7 +6,7 @@ from os import listdir
 def phrase(file, date_value):
     districts = ['宝山区\n','崇明区\n','奉贤区\n','虹口区\n','黄浦区\n','嘉定区\n','金山区\n','静安区\n','闵行区\n','浦东新区\n','普陀区\n','青浦区\n','松江区\n','徐汇区\n','杨浦区\n','长宁区\n']
     start = '各区信息如下：\n'
-    line = ''
+    line = '' #默认值
     print(f'Begin to phrase {date_value}')
     while (line and line != start):
         line = f.readline()
@@ -23,7 +23,7 @@ def phrase_district(file, district, date_value):
     end = '已对相关居住地落实终末消毒措施。\n'
     line = file.readline()
     print(line)
-    while (line == '\n'):
+    while (line == '\n' or line == '（滑动查看更多↓）\n'):
         line = file.readline()
     districts_daily.write(date_value + "," + line[:-1] + "," + district + '\n')
     while (line and line != end):
