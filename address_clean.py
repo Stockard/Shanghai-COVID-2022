@@ -20,25 +20,38 @@ def phrase(file, date_value):
             break
 
 def phrase_district(file, district, date_value):
-    end = '已对相关居住地落实终末消毒措施。\n'
+    end = '消毒'
     line = file.readline()
     print(line)
     while (line == '\n' or line == '（滑动查看更多↓）\n'):
         line = file.readline()
-    districts_daily.write(date_value + "," + line[:-1] + "," + district + '\n')
-    while (line and line != end):
+    districts_daily.write(date_value + "," + line[:-1].strip() + "," + district + '\n')
+    while (line and line.find(end) < 0):
         line = file.readline()
-        if line != '\n' and line != end:
-            address_daily.write(date_value + "," + line[:-1]  + "," + district + '\n')
+        if line != '\n' and (line.find(end) < 0):
+            address_write(address_daily, date_value, line[:-1], district)
+
+def address_write(f, date_value, text, district):
+    quotes = ['，', '、', '。']
+    modified_text = text
+    for i in quotes:
+        modified_text = modified_text.replace(i, ',')
+    modified_text = modified_text.split(',')
+    for t in modified_text:
+        if t != '':
+            f.write(date_value + "," + t.strip() + "," + district + '\n')
+
 
 if __name__ == '__main__':
-    districts_daily = codecs.open('districts_daily.txt', mode = 'w', encoding = 'utf-8')
-    address_daily = codecs.open('address_daily.txt', mode = 'w', encoding = 'utf-8')
-    filelist = listdir()
+    districts_daily = codecs.open('data/temp/districts_daily.txt', mode = 'w', encoding = 'utf-8')
+    address_daily = codecs.open('data/temp/address_daily.txt', mode = 'w', encoding = 'utf-8')
+    filelist = listdir('data/address')
     for file in filelist:
+        if '.' in file:
+            continue
         print(f'now opeing {file}')
         date_value = file
-        f = codecs.open(file, mode='r', encoding='utf_8')
+        f = codecs.open('data/address/' + file, mode='r', encoding='utf_8')
         phrase(f, date_value)
         f.close()
     districts_daily.close()
