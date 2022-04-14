@@ -6,6 +6,8 @@ Data Sharing Portal
 
 最新的工作流见[Notion链接](https://stockard-halfway.notion.site/9aace6bd589c490f8015f98d87ea735f?v=7b2a1b31be1a469d9f373e1cb0e59f0d)
 
+# [Tableau Viz](https://public.tableau.com/app/profile/stockard.feng/viz/_16494860765160/1)
+
 # 项目整体框架
 
 项目有两个目的：一，宏观层面提高上海数据的可见性。**大平台提供确诊/无症状数，参考价值不大，需自己清理一套指标。** 二，目前上海疫情发展要看每个街道和小区层面的处理，**通过可视化及时地识别街道和小区的异常发展，能推动人们采取行动。**
@@ -25,3 +27,14 @@ Data Sharing Portal
 - 数据呈现
     - [ ]  搭一个网站快速可视化
     - [ ]  研究街道数据可视化
+
+# Github上的项目链接
+[疫情发布会通知](https://github.com/liurenjie520/Shanghai_COVID-19_Push)
+[生活必需品词库](https://github.com/xuanskyer/shanghai_covid_19_goods)
+[疫情数据分析](https://github.com/kekincai/shanghai_covid19)
+[疫情地址viz](https://github.com/Xenofex/covid-shanghai-viz)
+[各类疫情记录](https://github.com/000fan000/covid19-shanghai2022)
+
+#其他
+[上海生活指南](https://www.wolai.com/6TLbKJYT1JTq3cFqXTWVXC)
+

@@ -1,0 +1,5 @@
+address_folder = 'data/raw/address/'
+number_folder = 'data/raw/number/'
+district_file = 'data/temp/districts_daily.csv'
+address_file = 'data/temp/address_daily.csv'
+macro_file = 'data/use/macro_data.csv'
