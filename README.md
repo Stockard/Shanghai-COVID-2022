@@ -29,6 +29,7 @@ Data Sharing Portal
     - [ ]  研究街道数据可视化
 
 # 程序工作流(github没有及时更新的情况)
+
 - pull github 到本地
 - run crawl_official.py 抓取上海卫健委的报告并保存在 _data/raw_ 里，卫健委每天发布两条公告，一条地址，一条汇总数据公告
     - 汇总数据公告可以抓到，但因为地址公告是微信文章，抓不下来。接下来需要手动打开已经建立的 _data/raw/最新的日期_ 文件，手动去网站直接全文复制地址公告里面并保存（注意等网页完全加载完毕），目前无法全自动主要卡在这
@@ -41,6 +42,13 @@ Data Sharing Portal
         - run tidy_data.py 会更新每天的汇总数据到 macro_data.csv, 区级的数据还要处理
         - 需要理清合并以前的公告的程序逻辑，stockard working on it.
     - 数据完整性校验 - working on it
+
+需要预先安装的包：codecs, requests, newspaper(newspaper3k), retrying, pandas
+
+# 其他文件说明
+- config.py 这个主要存一些路径用的 #目前很messy
+- keys 这个没有在目录里，主要是定义gaode_ak, 防止key暴露
+
 
 # Github上的项目链接
 [疫情发布会通知](https://github.com/liurenjie520/Shanghai_COVID-19_Push)
