@@ -36,7 +36,7 @@ Data Sharing Portal
 - run extract_address.py 把公告里所有的地址和区级的数据拆出，存在 data/temp 里 #地址在 address_daily.csv, 区级数据在districts_daily.csv
     - 地址处理
         - run tidy_address.py 根据目前的geo字典 data/use/geo.csv ，导出增量地址 data/temp/address_add.csv 。地址有很多重复，只需要更新增量。
-        - run fetch_geo.py 根据增量地址来跑，并且导出新增地址到 temp/geo_add.csv 的程序。
+        - run fetch_geo.py 根据增量地址来跑，并且导出新增geo字典到 temp/geo_add.csv
         - 合并地址和每日数据, 进行完整性校验, stockard working on it.
     - 数据处理
         - run tidy_data.py 会更新每天的汇总数据到 macro_data.csv, 区级的数据还要处理
