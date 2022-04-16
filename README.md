@@ -18,13 +18,9 @@ Data Sharing Portal
 **三月初防疫中漏掉的地区可能是系统性的遗漏，并不完全代表精准防疫的失败。** 而且目前疫情的来源也多半是这些遗漏的地区。
 
 
-# 程序工作流(github没有及时更新的情况)
-
-- ./run.sh 需要手动黏贴最近一天的地址信息，其他为自动
+预先安装的包：codecs, requests, newspaper(newspaper3k), retrying, pandas
 
 # 工作进度
-
-预先安装的包：codecs, requests, newspaper(newspaper3k), retrying, pandas
 
 - 数据获取和预处理
     - [x]  数据主要来源于上海发布，每天11点发布两条信息，一条包含宏观信息，一条包含详细的地址信息
