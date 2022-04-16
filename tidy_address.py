@@ -3,7 +3,7 @@
 #[] 根据temp/address_daily里的数据汇总到经纬度-地址对应表：经纬度只需查询新增地址
 import pandas as pd
 import codecs
-from config import address_file, geo_file, address_add_file, address_file_extend
+from config import address_file, geo_file, address_add_file, pre_address_file
 
 def list_compare(master, full):
     add_list = []
@@ -18,12 +18,10 @@ def complete_check():
     pass
 
 if __name__ == '__main__':
-    address_add = codecs.open(address_add_file, mode = 'w', encoding='utf_8')
-
     address = pd.read_csv(address_file, encoding = 'utf-8')
-    address_extend = pd.read_csv(address_file_extend, encoding = 'utf-8')
-    address_series = address.address.append(address_extend.address, ignore_index = True)
-    address_full_list = address_series.unique()
+    address_extend = pd.read_csv(pre_address_file, encoding = 'utf-8')
+    address_series = pd.concat([address, address_extend]).loc[:, ['address', 'district']]
+    address_full_list = address_series.address.unique()
 
     geo = pd.read_csv(geo_file, encoding = 'utf-8')
     geo_full_list = pd.unique(geo.address)
@@ -31,9 +29,7 @@ if __name__ == '__main__':
     print(f'--address list unique {len(address_full_list)} full {address_series.shape[0]}--')
     print(f'--geo list unique {len(geo_full_list)} full {geo.shape[0]}--')
 
-    address_add_list = list_compare(geo_full_list, address_full_list)
-    address_add.write('address\n')
-    for i in address_add_list:
-        address_add.write(i)
-        address_add.write('\n')
-    address_add.close()
+    print(address_series)
+    address_series['not_in_geo_list'] = address_series.apply(lambda x: x['address'] not in geo_full_list, axis = 1)
+    address_add = address_series.loc[address_series['not_in_geo_list'], ['address', 'district']]
+    address_add.to_csv(address_add_file, index = False)

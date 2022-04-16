@@ -4,7 +4,7 @@ import codecs
 import re
 from os import listdir
 
-from config import district_file, address_file, address_folder, number_folder
+from config import district_file, address_file, address_dir, number_dir
 
 def parse(file, date_value):
     districts = ['宝山区\n','崇明区\n','奉贤区\n','虹口区\n','黄浦区\n','嘉定区\n','金山区\n','静安区\n','闵行区\n','浦东新区\n','普陀区\n','青浦区\n','松江区\n','徐汇区\n','杨浦区\n','长宁区\n']
@@ -76,13 +76,13 @@ if __name__ == '__main__':
     address_value = codecs.open(address_file, mode = 'w', encoding = 'utf-8')
     address_value.write('date,address,district\n')
     districts_value.write('date,patient,nosymptom,district\n')
-    filelist = listdir(address_folder)
+    filelist = listdir(address_dir)
     for file in filelist:
         if '.' in file:
             continue
         print(f'now opeing {file}')
         date_value = file
-        f = codecs.open(address_folder + file, mode='r', encoding='utf_8')
+        f = codecs.open(address_dir + file, mode='r', encoding='utf_8')
         parse(f, date_value)
         f.close()
     districts_value.close()

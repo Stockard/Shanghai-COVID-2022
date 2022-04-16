@@ -17,7 +17,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from newspaper import Article
 from retrying import retry
-from config import address_folder, number_folder
+from config import address_dir, number_dir
 
 baseurl = ['https://wsjkw.sh.gov.cn/yqtb/index.html']
 prefixurl = 'https://wsjkw.sh.gov.cn/'
@@ -64,9 +64,9 @@ def crawl_list(baseurl):
                 continue
             title, article = parse_notice_detail(url, title)
             if is_address:
-                save(address_folder, create_date, article)
+                save(address_dir, create_date, article, url)
             else:
-                save(number_folder, create_date, article)
+                save(number_dir, create_date, article, url)
 
 
 @retry(stop_max_attempt_number=9, wait_random_min=10, wait_random_max=20)
@@ -91,10 +91,11 @@ def not_crawled(url):
     pass
     return True
 
-def save(dir, create_date, article):
+def save(dir, create_date, article, url):
     #抓取并保存
     filelist = listdir(dir)
     if create_date not in filelist:
+        print(f'{create_date}  {url}')
         f = codecs.open(dir + '/' + create_date, mode='w', encoding='utf_8')
         f.write(article)
         f.close()

@@ -1,13 +1,33 @@
+
+#foler
+raw_dir = 'data/raw'
+temp_dir = 'data/temp'
+pre_dir = 'data/precleaning'
+use_dir = 'data/use'
+
 #setup
-address_folder = 'data/raw/address/'
-number_folder = 'data/raw/number/'
-district_file = 'data/temp/districts_daily.csv'
-address_file = 'data/temp/address_daily.csv'
-address_file_extend = 'data/precleaning/address_0301_0317.csv'
-macro_file = 'data/use/macro_data.csv'
-geo_file = 'data/use/geo.csv'
-address_add_file = 'data/temp/address_add.csv'
+address_dir = "%s/address/" % raw_dir
+number_dir = "%s/number/" % raw_dir
+district_file = '%s/districts_daily.csv' % temp_dir
+address_file = temp_dir + '/address_daily.csv'
+
+#导出数据
+temp_macro_file = '%s/macro_data.csv' % temp_dir
+geo_add_file = '%s/geo_add.csv' % temp_dir
+address_add_file = '%s/address_add.csv' % temp_dir
+
+district_file = '%s/shanghai_district_data.csv' % use_dir
+macro_file = '%s/shanghai_data.csv' % use_dir
+geo_file = '%s/geo.csv' % use_dir
+
+
+#非自动生成数据
+pre_macro_file = '%s/macro_0324.csv' % pre_dir
+pre_address_file = '%s/patient_address_0301_0317.csv' % pre_dir #从病人地址中来的
+pre_patient_file = '%s/patient_0301_0317.csv' % pre_dir
 
 #retired
-first_geo_file = 'data/precleaning/address_0401_0411.csv'
-geo_dict = 'data/use/geo.csv'
+pre_address_file = '%s/address_0401_0414.csv' % pre_dir
+pre_geo_file = '%s/geo.csv' % pre_dir #use by build_geo_database_temp.py
+district_details_t2 = '%s/district_details_2.csv' % temp_dir #0318-0325
+district_details_t3 = '%s/district_details_3.csv' % temp_dir #0318-0325
