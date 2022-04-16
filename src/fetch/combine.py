@@ -3,6 +3,7 @@ import pandas as pd
 from config import pre_macro_file, temp_macro_file, macro_file
 from config import pre_patient_file, district_details_t2, district_details_t3, district_file
 from config import geo_file, geo_add_file
+from config import address_file, pre_patient_file, address_cleaned_file
 
 #日，区，无症状/确诊，维度数据
 
@@ -47,9 +48,16 @@ def merge_geo_data():
     #汇总病例数和地址数据，用于作图
     # + [location], geo features
 
+def merge_address():
+    address = pd.read_csv(address_file) #
+    pre_address = pd.read_csv(pre_patient_file) #3月18日之前
+    address = pd.concat([address, pre_address[['date', 'address', 'district']]])
+    address.to_csv(address_cleaned_file, index = False)
+
 #先在本地分析街道级别到数据（tableau？）
 
 if __name__ == '__main__':
     merge_marcro_data()
     merge_district_data()
     merge_geo_data()
+    merge_address()

@@ -16,6 +16,7 @@ temp_macro_file = '%s/macro_data.csv' % temp_dir
 geo_add_file = '%s/geo_add.csv' % temp_dir
 address_add_file = '%s/address_add.csv' % temp_dir
 
+address_cleaned_file = '%s/address.csv' % use_dir
 district_file = '%s/shanghai_district_data.csv' % use_dir
 macro_file = '%s/shanghai_data.csv' % use_dir
 geo_file = '%s/geo.csv' % use_dir
@@ -23,8 +24,8 @@ geo_file = '%s/geo.csv' % use_dir
 
 #非自动生成数据
 pre_macro_file = '%s/macro_0324.csv' % pre_dir
-pre_address_file = '%s/patient_address_0301_0317.csv' % pre_dir #从病人地址中来的
-pre_patient_file = '%s/patient_0301_0317.csv' % pre_dir
+pre_address_file = '%s/patient_address_0306_0317.csv' % pre_dir #从病人地址中来的
+pre_patient_file = '%s/patient_0306_0317.csv' % pre_dir
 
 #retired
 pre_address_file = '%s/address_0401_0414.csv' % pre_dir

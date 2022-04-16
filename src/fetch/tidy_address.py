@@ -30,6 +30,7 @@ if __name__ == '__main__':
     print(f'--geo list unique {len(geo_full_list)} full {geo.shape[0]}--')
 
     print(address_series)
+    address_series.drop_duplicates('address', inplace = True)
     address_series['not_in_geo_list'] = address_series.apply(lambda x: x['address'] not in geo_full_list, axis = 1)
     address_add = address_series.loc[address_series['not_in_geo_list'], ['address', 'district']]
     address_add.to_csv(address_add_file, index = False)
