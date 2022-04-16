@@ -7,7 +7,7 @@ Data Sharing Portal
 
 # Tableau Viz
 
-[点击查看](https://public.tableau.com/app/profile/stockard.feng/viz/_16494860765160/1))
+[点击查看](https://public.tableau.com/app/profile/stockard.feng/viz/_16494860765160/1)
 
 # 项目整体框架
 
@@ -21,6 +21,8 @@ Data Sharing Portal
 # 程序工作流(github没有及时更新的情况)
 
 - ./run.sh 需要手动黏贴最近一天的地址信息，其他为自动
+
+# 工作进度
 
 预先安装的包：codecs, requests, newspaper(newspaper3k), retrying, pandas
 
