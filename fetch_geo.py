@@ -3,7 +3,7 @@
 import requests
 import pandas as pd
 import csv
-from config import gaode_ak
+from keys import gaode_ak
 
 data = pd.read_csv('/Users/zhulongfei/Desktop/temp/NCP-shanghai/0410.csv', engine='python')#导入对应地址的csv文件
 data = data['完整地址']#选择地址列的数据
