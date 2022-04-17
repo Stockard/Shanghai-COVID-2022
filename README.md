@@ -1,7 +1,7 @@
 # Shanghai-COVID-2022
 
-Data Sharing Portal
-清理完毕的数据在 data/use/里可以看到
+Data Sharing Portal - 半自动化的上海疫情数据更新工具，包括市级数据，区级数据，地址数据，每天只需要五分钟即可更新。
+清理完毕的数据在 data/use/里
 
 最新的工作流见[Notion链接](https://stockard-halfway.notion.site/9aace6bd589c490f8015f98d87ea735f?v=7b2a1b31be1a469d9f373e1cb0e59f0d)
 
@@ -34,7 +34,6 @@ MACOS
 
 三月初上海的精准防疫建立在应测尽测，阳性闭环管理基础上。
 **三月初防疫中漏掉的地区可能是系统性的遗漏，并不完全代表精准防疫的失败。** 而且目前疫情的来源也多半是这些遗漏的地区。
-
 
 # 工作进度
 
