@@ -23,7 +23,7 @@ geo_file = '%s/geo.csv' % use_dir
 
 
 #非自动生成数据
-pre_macro_file = '%s/macro_0324.csv' % pre_dir
+pre_macro_file = '%s/macro_0318.csv' % pre_dir
 pre_address_file = '%s/patient_address_0306_0317.csv' % pre_dir #从病人地址中来的
 pre_patient_file = '%s/patient_0306_0317.csv' % pre_dir
 

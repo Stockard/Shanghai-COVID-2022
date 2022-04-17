@@ -2,6 +2,7 @@
 """
 3月17日前的用已经清理完的数据，不另外写程序清理
 [ ] 对25号前的每日数据还有bug（不修了）
+[ ] 4.14开始治愈出院变成累计数
 """
 import codecs
 import re
@@ -229,7 +230,8 @@ class Report_parse():
             serious = find_patterns(self.in_hospital, '重症(\d+)', ALLOW_SKIP)
             dead = find_patterns(self.in_hospital, '死亡(\d+)', ALLOW_SKIP)
         nosymptom_to_patient = 0
-        heal = str(int(heal) - 385)
+        if int(self.date) < 20220414: #治愈出院调整 2022溺爱4月14日后变成累计数
+            heal = str(int(heal) - 385)
         return (patient_close, nosymptom_close, \
                 nosymptom_control, leave_nosymptom_control, in_hospital, heal, serious, dead)
 
