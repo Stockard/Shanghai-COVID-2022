@@ -5,6 +5,20 @@ Data Sharing Portal
 
 最新的工作流见[Notion链接](https://stockard-halfway.notion.site/9aace6bd589c490f8015f98d87ea735f?v=7b2a1b31be1a469d9f373e1cb0e59f0d)
 
+# 使用方法
+需要的包：codecs, requests, newspaper(newspaper3k), retrying, pandas
+
+- 申请高德key 写入 keys.py #
+  keys.py 没有在目录里，主要是定义gaode_ak, 防止key暴露
+
+MACOS
+运行 ./run.sh
+  会生成卫健委的文件，但中间有一步需要手动 - 根据显示的微信文章地址把文章数据贴在最新几天的文件里。 -> raw/data/address
+再次运行 ./run.sh
+
+其他系统
+按 ./run.sh的说明依次运行即可
+
 # Tableau Viz
 
 [点击查看](https://public.tableau.com/app/profile/stockard.feng/viz/_16494860765160/1)
@@ -17,8 +31,6 @@ Data Sharing Portal
 三月初上海的精准防疫建立在应测尽测，阳性闭环管理基础上。
 **三月初防疫中漏掉的地区可能是系统性的遗漏，并不完全代表精准防疫的失败。** 而且目前疫情的来源也多半是这些遗漏的地区。
 
-
-预先安装的包：codecs, requests, newspaper(newspaper3k), retrying, pandas
 
 # 工作进度
 
@@ -36,9 +48,7 @@ Data Sharing Portal
     - [ ]  搭一个网站快速可视化
     - [ ]  研究街道数据可视化
 
-# 其他文件说明
-- config.py 这个主要存一些路径用的 #目前很messy
-- keys 这个没有在目录里，主要是定义gaode_ak, 防止key暴露
+
 
 # Github上的项目链接
 [疫情发布会通知](https://github.com/liurenjie520/Shanghai_COVID-19_Push)

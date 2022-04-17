@@ -1,5 +1,5 @@
 
-#foler
+#folder
 raw_dir = 'data/raw'
 temp_dir = 'data/temp'
 pre_dir = 'data/precleaning'
