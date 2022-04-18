@@ -63,4 +63,5 @@ MACOS
 #其他
 [上海生活指南](https://www.wolai.com/6TLbKJYT1JTq3cFqXTWVXC)
 
+People lie and forget and rewrite, but data never lies nor forgets.
 仅为记录，以守为攻
