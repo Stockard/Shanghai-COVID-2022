@@ -14,6 +14,7 @@ address_file = temp_dir + '/address_daily.csv'
 #导出数据
 temp_macro_file = '%s/macro_data.csv' % temp_dir
 geo_add_file = '%s/geo_add.csv' % temp_dir
+geo_add_temp_file = '%s/geo_add_temp.csv' % temp_dir
 address_add_file = '%s/address_add.csv' % temp_dir
 
 address_cleaned_file = '%s/address.csv' % use_dir

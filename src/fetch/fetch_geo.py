@@ -8,7 +8,7 @@ from retrying import retry
 from lnglat_transform import Lnglat_transform
 from lnglat_transform import data_split_to_float
 
-from config import address_add_file, geo_add_file
+from config import address_add_file, geo_add_file, geo_add_temp_file
 from keys import gaode_ak #高德地图API key，个人唯一，注意保密
 
 # 高德AP需要的信息
@@ -78,11 +78,11 @@ def address_writer(flag, list):
     if flag == 0:
         title_row = ['district', 'address', 'complete_address', '经纬度','street_level']
         # with open('temp2.csv', 'w', newline='')as f:
-        with open(geo_add_file, 'a+', encoding= 'utf-8', newline='') as f:
+        with open(geo_add_temp_file, 'w', encoding= 'utf-8', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(title_row)
     else:
-        with open(geo_add_file, 'a+', encoding= 'utf-8', newline='')as f:
+        with open(geo_add_temp_file, 'a+', encoding= 'utf-8', newline='')as f:
             writer = csv.writer(f)
             writer.writerows(list)
 
@@ -92,7 +92,7 @@ if __name__ == '__main__':
     address_to_geo(data, 50)#用于控制单次写入文件的内容不超过500条
     # 将高德经纬度数据转换成wgs标准
     g = Lnglat_transform()
-    lnglat_df = pd.read_csv(geo_add_file, encoding='utf-8')
+    lnglat_df = pd.read_csv(geo_add_temp_file, encoding='utf-8')
     lnglat_df = data_split_to_float(lnglat_df)
     gps_df = g.lnglat_batch_map(lnglat_df)
 #    gps_df = data_concat(gps_df)
