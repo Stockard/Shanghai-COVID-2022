@@ -178,7 +178,8 @@ class Report_parse():
             self.first_line = self.text_list[self.current_line]
         if self.move_block_pointer('新增本土新冠肺炎确诊病例'): #开始处理确诊部分
             if self.move_block_pointer('病例(\d+)'):
-                find_close, close_line = self.find_block_num('密切接触者')
+                find_close, close_line = self.find_block_num('病例\d+', reverse=True)
+                print(close_line, self.text_list[close_line])
                 self.patient_details = Cleaning_district_block(self.date, '病例') #初始化block
                 self.district_details_type = self.patient_details.get_district_details_type() #先放在这里，逻辑有点奇怪
                 for i in range(self.current_line, close_line):
@@ -188,7 +189,7 @@ class Report_parse():
         if self.move_block_pointer('新增本土无症状'):
             #开始处理密接部分
             if self.move_block_pointer('无症状感染者(\d+)'):
-                find_close, close_line = self.find_block_num('密切接触者')
+                find_close, close_line = self.find_block_num('无症状感染者(\d+)', reverse=True)
                 self.nosymptom_details = Cleaning_district_block(self.date, '无症状感染者') #初始化block
                 for i in range(self.current_line, close_line):
                     self.nosymptom_details.add(self.text_list[i])
@@ -264,15 +265,23 @@ class Report_parse():
         self.current_line = line_pointer
         return find_text
 
-    def find_block_num(self, location_pattern):
+    def find_block_num(self, location_pattern, reverse = False):
+        # reverse = find next line without pattern
         start_line = self.current_line
         find_text = 0
         line_num = start_line
-        for i in range(start_line, self.text_list_length):
-            if len(re.findall(location_pattern, self.text_list[i])) > 0:
-                find_text = 1
-                line_num = i
-                break
+        if reverse == True:
+            for i in range(start_line, self.text_list_length):
+                if ((self.text_list[i] != '\n') and len(re.findall(location_pattern, self.text_list[i])) == 0):
+                    find_text = 1
+                    line_num = i
+                    break
+        else:
+            for i in range(start_line, self.text_list_length):
+                if len(re.findall(location_pattern, self.text_list[i])) > 0:
+                    find_text = 1
+                    line_num = i
+                    break
         return find_text, line_num
 
 
