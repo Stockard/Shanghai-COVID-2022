@@ -2,7 +2,8 @@
 """
 3月17日前的用已经清理完的数据，不另外写程序清理
 [ ] 对25号前的每日数据还有bug（不修了）
-[ ] 4.14开始治愈出院变成累计数
+[x] 4.14开始治愈出院变成累计数
+[x] 4.18日汇报增加实际阳性感染
 """
 import codecs
 import re
@@ -209,8 +210,11 @@ class Report_parse():
 
     def parse_first_line(self):
         patients, nosymptom, nosymptom_to_patient, patient_findallin_control, nosymptom_findallin_control = [0, 0, 0, 0, 0]
-        (patients, nosymptom) = find_patterns(self.first_line, '新增本土新冠肺炎确诊病例(\d+)[例|]和无症状感染者(\d+)例')  #其中本土无症状感染者102例，境外输入性无症状感染者8例。
+        patients = find_patterns(self.first_line, '新增本土新冠肺炎确诊病例(\d+)[例|]')  #其中本土无症状感染者102例，境外输入性无症状感染者8例。
+        nosymptom = find_patterns(self.first_line, '无症状感染者(\d+)例')  #其中本土无症状感染者102例，境外输入性无症状感染者8例。
         nosymptom_to_patient = find_patterns(self.first_line, '(\d+)例确诊病例为此前无症状感染者转归', ALLOW_SKIP)  #其中本土无症状感染者102例，境外输入性无症状感染者8例。
+        if nosymptom_to_patient == "0":
+            nosymptom_to_patient = find_patterns(self.first_line, '无症状感染者转为确诊病例(\d+)', ALLOW_SKIP)  #其中本土无症状感染者102例，境外输入性无症状感染者8例。
         (patient_findallin_control, nosymptom_findallin_control) = find_patterns(self.first_line, '(\d+)例确诊病例和(\d+)例无症状感染者在隔离管控中')
         return (patients, nosymptom, nosymptom_to_patient, patient_findallin_control, nosymptom_findallin_control)
 
