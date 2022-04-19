@@ -1,6 +1,5 @@
 #先处理好旧数据，再加增量数据
 #placeholder
-#[] 根据temp/address_daily里的数据汇总到经纬度-地址对应表：经纬度只需查询新增地址
 import pandas as pd
 import codecs
 from config import address_file, geo_file, address_add_file, pre_address_file

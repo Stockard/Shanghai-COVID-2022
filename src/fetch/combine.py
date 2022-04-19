@@ -25,8 +25,6 @@ def merge_district_data():
     district_t2 = pd.read_csv(district_details_t2)
     district_t3 = pd.read_csv(district_details_t3)
 
-    print(pre_patient)
-
     dis_1 = pre_patient.groupby(['date', 'is_patient', 'district', 'source'], as_index = False).size().rename(columns = {'size':'count'})
     dis_2 = district_t2.groupby(['date', 'is_patient', 'district', 'source'], as_index = False).size().rename(columns = {'size':'count'})
     dis_3 = district_t3[['date', 'is_patient', 'district', 'source','count']]

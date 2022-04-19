@@ -2,6 +2,7 @@
 #修改自 https://github.com/youqingxiaozhua/GeneralNewsSpider
 #清理上海发布每天发布的病例信息 since 3/26/2022 | 3月17日前每个病人都有地址 ｜ 3月18-25日每个病人都有区
 #5号开始地址数据变成微信数据，无法获取
+#卫健委官网没有放的一些日期
 #3月17日	https://mp.weixin.qq.com/s/ZSIDH6G-IIrWUmXKpWGulg
 #3月16日	https://mp.weixin.qq.com/s/J8Ib1MFCWI6vouw5Gz2MiQ
 #3月18日	https://mp.weixin.qq.com/s/OFt7LzeHt8fNl6GqPpkD1g

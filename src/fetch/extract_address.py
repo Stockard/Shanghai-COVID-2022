@@ -68,10 +68,6 @@ def build_exist_date(file):
     return date_list
 
 if __name__ == '__main__':
-#    list_district_exist = build_exist_date(district_file)
-#    list_address_exist = build_exist_date(address_file)
-#    print(list_district_exist)
-#    print(list_address_exist)
     districts_value = codecs.open(district_file, mode = 'w', encoding = 'utf-8')
     address_value = codecs.open(address_file, mode = 'w', encoding = 'utf-8')
     address_value.write('date,address,district\n')
