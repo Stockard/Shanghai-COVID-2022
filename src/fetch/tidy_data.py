@@ -225,13 +225,14 @@ class Report_parse():
         numbers_first = self.parse_first_line()
         self.parse_district()
         numbers_second = self.parse_separate_lines()
-        outside_patient = str(int(numbers_first[0]) - int(numbers_first[2]) - int(numbers_first[3]))
-        outside_nosymptom = str(int(numbers_first[1]) - int(numbers_first[4]))
+        outside_patient = str(int(numbers_first[0]) - int(numbers_first[2]) - int(numbers_first[4]))
+        outside_nosymptom = str(int(numbers_first[1]) - int(numbers_first[5]))
 #        outside_patient = str(int(patients) - int(nosymptom_to_patient) - int(patient_findallin_control))
 #        outside_nosymptom = str(int(nosymptom) - int(nosymptom_findallin_control))
         self.numbers = (*numbers_first, outside_patient, outside_nosymptom, *numbers_second)
 
     def parse_first_line(self):
+        patient_outside = "0" # 野生确诊默认为0
         patients, nosymptom, nosymptom_to_patient, patient_findallin_control, nosymptom_findallin_control = [0, 0, 0, 0, 0]
         patients = find_patterns(self.first_line, '新增本土新冠肺炎确诊病例(\d+)[例|]')  #其中本土无症状感染者102例，境外输入性无症状感染者8例。
         nosymptom = find_patterns(self.first_line, '无症状感染者(\d+)例')  #其中本土无症状感染者102例，境外输入性无症状感染者8例。
@@ -239,7 +240,7 @@ class Report_parse():
         if nosymptom_to_patient == "0":
             nosymptom_to_patient = find_patterns(self.first_line, '无症状感染者转为确诊病例(\d+)', ALLOW_SKIP)  #其中本土无症状感染者102例，境外输入性无症状感染者8例。
         (patient_findallin_control, nosymptom_findallin_control) = find_patterns(self.first_line, '(\d+)例确诊病例和(\d+)例无症状感染者在隔离管控中')
-        return (patients, nosymptom, nosymptom_to_patient, patient_findallin_control, nosymptom_findallin_control)
+        return (patients, nosymptom, nosymptom_to_patient, patient_outside, patient_findallin_control, nosymptom_findallin_control)
 
     def parse_district(self):
         self.district_details = []
@@ -313,7 +314,7 @@ def intialization_writers():
     district_f_2.write(",".join(['date', 'is_patient', 'source', 'number', 'sex', 'age', 'district']) + '\n')
     district_f_3.write(",".join(['date', 'is_patient', 'source', 'district', 'count']) + '\n')
     macro_writer = codecs.open(macro_file, mode = 'w', encoding='utf_8')
-    macro_writer.write(",".join(('时间', '确诊病例', '无症状感染者', '无症状转确诊', '管控内确诊', '管控内无症状',\
+    macro_writer.write(",".join(('时间', '确诊病例', '无症状感染者', '无症状转确诊', '野生确诊', '管控内确诊', '管控内无症状',\
             '例行筛查确诊', '例行筛查无症状', \
             '确诊密接', '无症状密接', \
             '本土医学观察中无症状', '解除医学观察', '本土在院治疗中', '治愈出院', '重症', '死亡\n')))
@@ -330,7 +331,7 @@ def district_writer(district_list, date, report_type):
 
 def get_numbers(f, date_value):
     """
-    return: 市('时间', '确诊病例', '无症状感染者', '无症状转确诊', '管控内确诊', '管控内无症状',\
+    return: 市('时间', '确诊病例', '无症状感染者', '无症状转确诊', '野生确诊', '管控内确诊', '管控内无症状',\
         '确诊密接', '无症状密接', '本土医学观察中无症状', '本土在院治疗中', '治愈出院', '重症', '死亡', '解除医学观察\n')    """
     print(f'reading {file}')
     text = f.readlines()
