@@ -17,6 +17,12 @@ from convert_date import convert_date_string_to_excel_ordinal
 
 ALLOW_SKIP= 1
 
+def str_to_int(s):
+    if s == '':
+        return 0
+    else:
+        return int(s)
+
 def filter_list():
     #确定到底使用哪些文件
     begin = 20220318 #实际可以从3月25日开始
@@ -35,7 +41,7 @@ def find_patterns(text, match_pattern, allow_skip = 0):
     if len(values) > 0:
         values = values[0]
     else:
-        values = '0'
+        values = ''
     return values
 
 class Cleaning_district_block():
@@ -225,8 +231,8 @@ class Report_parse():
         numbers_first = self.parse_first_line()
         self.parse_district()
         numbers_second = self.parse_separate_lines()
-        outside_patient = str(int(numbers_first[0]) - int(numbers_first[2]) - int(numbers_first[4]))
-        outside_nosymptom = str(int(numbers_first[1]) - int(numbers_first[5]))
+        outside_patient = str(str_to_int(numbers_first[0]) - str_to_int(numbers_first[2]) - str_to_int(numbers_first[4]))
+        outside_nosymptom = str(str_to_int(numbers_first[1]) - str_to_int(numbers_first[5]))
 #        outside_patient = str(int(patients) - int(nosymptom_to_patient) - int(patient_findallin_control))
 #        outside_nosymptom = str(int(nosymptom) - int(nosymptom_findallin_control))
         self.numbers = (*numbers_first, outside_patient, outside_nosymptom, *numbers_second)

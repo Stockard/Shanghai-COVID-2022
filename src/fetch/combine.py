@@ -1,11 +1,12 @@
 import pandas as pd
 
+from validate import check_data_integrity
 from config import pre_macro_file, temp_macro_file, macro_file
-from config import pre_patient_file, district_details_t2, district_details_t3, district_file
+from config import district_details_t2, district_details_t3, district_file
 from config import geo_file, geo_add_file
 from config import address_file, pre_patient_file, pre_patient_sort_file, address_cleaned_file
 
-#日，区，无症状/确诊，维度数据
+#日，区，无症状/确诊，经纬度度数据
 
 def merge_marcro_data():
     #合并市一级数据
@@ -16,6 +17,7 @@ def merge_marcro_data():
     macro = pd.concat([pre_macro, current_macro], ignore_index = True)
     values = {"确诊病例": 0, "无症状感染者": 0, "无症状转确诊": 0, "野生确诊":0, "管控内确诊": 0, "管控内无症状": 0, "例行筛查确诊": 0, "例行筛查无症状": 0}
     macro.fillna(value = values, inplace = True)
+    macro = macro.astype(pd.Int64Dtype())
     macro.to_csv(macro_file, index = False)
 
 def merge_district_data():
@@ -54,38 +56,6 @@ def merge_address():
     pre_address = pd.read_csv(pre_patient_file) #3月18日之前
     address = pd.concat([address, pre_address[['date', 'address', 'district']]])
     address.to_csv(address_cleaned_file, index = False)
-
-def check_data_integrity():
-    #主要检查区数据
-    district = pd.read_csv(district_file)
-    macro = pd.read_csv(macro_file)
-    sum_district = district[['date', 'is_patient', 'count']].groupby(['date', 'is_patient'], as_index = False).sum()
-    for is_patient in ['确诊病例', '无症状感染者']: #检验每日确诊和无症状数据
-        for date in sum_district['date'].unique():
-            value_in_macro = int(macro[macro['时间'] == date][is_patient])
-            value_in_district_agg = int(sum_district[(sum_district['date'] == date) & (sum_district['is_patient'] == is_patient)]['count'])
-            assert(value_in_macro == value_in_district_agg)
-    for index, values in macro.iterrows(): #核验确诊数和无症状数分项目
-        try:
-            assert(values['确诊病例'] == values['无症状转确诊'] + values['管控内确诊'] + values['例行筛查确诊'] + values['野生确诊'])
-            assert(values['无症状感染者'] == values['管控内无症状'] + values['例行筛查无症状'])
-        except Exception as e:
-            print(f'请检查 {values["时间"]} 数据', e)
-    #检验区级别几个环节数据 暂时留空
-#先在本地分析街道级别到数据（tableau？）
-
-def check():
-    #检查是否漏掉了某些病例
-    date = 20220324
-    num = 1579
-    district_t2 = pd.read_csv(district_details_t2)
-#    dis_2 = district_t2.groupby(['date', 'is_patient', 'district', 'source'], as_index=False).size().rename(
-#        columns={'size': 'count'})
-    for i in range(num):
-        if district_t2[(district_t2['date'] == date) & (district_t2['number'] == i)].shape[0] != 1:
-            print(i)
-#    print(dis_2[dis_2['date'] == date])
-#    print(sum(dis_2[(dis_2['date'] == date) & (dis_2['is_patient'] == '无症状感染者')]['count']))
 
 if __name__ == '__main__':
     merge_marcro_data()
