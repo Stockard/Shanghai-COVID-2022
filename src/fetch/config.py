@@ -27,7 +27,7 @@ geo_file = '%s/geo.csv' % use_dir
 pre_macro_file = '%s/macro_0318.csv' % pre_dir
 pre_address_file = '%s/patient_address_0306_0317.csv' % pre_dir #从病人地址中来的
 pre_patient_file = '%s/patient_0306_0317.csv' % pre_dir
-
+pre_patient_sort_file = '%s/patient_0306_0317_sort.csv' % pre_dir
 #retired
 pre_address_file = '%s/address_0401_0414.csv' % pre_dir
 pre_geo_file = '%s/geo.csv' % pre_dir #use by build_geo_database_temp.py

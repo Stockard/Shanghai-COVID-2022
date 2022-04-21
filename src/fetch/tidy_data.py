@@ -51,13 +51,14 @@ class Cleaning_district_block():
         self.date = date
         self.district_details_type = 1 #根据日期决定到时间
         self.p_or_o = p_or_o #病例或无症状感染者
+        self.p_or_o_string = self.map_p_or_o(p_or_o) #病例或无症状感染者
         self.set_district_details_type()
         self.add(text)
 
     def add(self, text):
         #是一个字符串流顺序输入的过程 输入理论上从第一个患者开始到密接结束
         find_source, source = self.get_source(text)
-        self.current_line = self.current_line + text
+        self.current_line = self.current_line + text.replace('\n', '') #不替换会出bug，在区前面有两个回车，无法识别汇总
         if find_source:
             self.text_list.append(self.current_line)
             self.current_line = ''
@@ -68,13 +69,21 @@ class Cleaning_district_block():
         for line in self.text_list:
             details = self.export_line(line)
             self.details_list += details
+#        print(self.export_text()) #debug
         return self.details_list
 
     def get_district_details_type(self):
         return self.district_details_type
 
     def export_text(self):
-        return self.details_list
+        return self.text_list
+
+    def map_p_or_o(self, p_or_o):
+        #string 汇总和分区统一
+        s = p_or_o
+        if p_or_o == '病例':
+            s = '确诊病例'
+        return s
 
     def set_district_details_type(self):
         self.district_details_type = self.get_district_details_type()
@@ -101,23 +110,36 @@ class Cleaning_district_block():
         if self.district_details_type == 1:
             pass #不做处理
         elif self.district_details_type == 2: #317 - 325公告
-            pattern = self.p_or_o + '(\d+)，([男｜女])，(\d+)岁，居住于([\u4e00-\u9fa5]{2})[新区|区]'
+            pattern = self.p_or_o + '(\d+)，([男｜女])，(\d+)岁，居住于([\u4e00-\u9fa5]{2})[新区|区]' #0324里出现了个婴儿 无症状感染者58，男，4月龄，居住于嘉定区
+            baby_pattern = self.p_or_o + '(\d+)，([男｜女])，\d+月龄，居住于([\u4e00-\u9fa5]{2})[新区|区]' #0324里出现了个婴儿 无症状感染者58，男，4月龄，居住于嘉定区
             patient_string = re.findall(pattern, text)
+            baby_string = re.findall(baby_pattern, text)
             if len(patient_string) > 0:
-    #            print(patient_string)
                 for s in patient_string:
-                    details.append([self.p_or_o, source, *s])
+                    details.append([self.p_or_o_string, source, *s])
+            if len(baby_string) > 0:
+                for number, sex, district in baby_string: # age = 0
+                    details.append([self.p_or_o_string, source, number, sex, '0', district])
         elif self.district_details_type == 3: #0325之后的公告
-            pattern = self.p_or_o + '(\d+)，居住于([\u4e00-\u9fa5]{2})[新区|区]' #会返回患者编号，需要处理才能输出每个区到个数
+            first_patient_pattern = self.p_or_o + '(\d+)' #返回第一个患者编号 ugly fix of pudong district
+            pattern = self.p_or_o + '(\d+)，居住于[，]{0,1}([\u4e00-\u9fa5]{2})[新区|区]' #会返回患者编号，需要处理才能输出每个区到个数；4月1日数据里多了一个、
+            first_patient = re.findall(first_patient_pattern, text)
+            if len(first_patient) > 0:
+                first_patient = first_patient[0]
+            else:
+                first_patient = 0
             patient_string = re.findall(pattern, text)
             if len(patient_string) > 0:
                 for i in range(len(patient_string)):
                     last_num, district = patient_string[i]
                     if (i == 0):
-                        number = int(last_num)
+                        number = int(last_num) - int(first_patient) + 1
+                        if number < 0:
+                            print(text)
+                            print(f'{last_num} {first_patient} {district}')
                     else:
                         number = int(last_num) - int(patient_string[i-1][0])
-                    details.append([self.p_or_o, source, district, str(number)])
+                    details.append([self.p_or_o_string, source, district, str(number)])
 #        print(details, self.report_type)
         return details
 
@@ -177,9 +199,9 @@ class Report_parse():
         if self.move_block_pointer('市卫健委'): #获得首行
             self.first_line = self.text_list[self.current_line]
         if self.move_block_pointer('新增本土新冠肺炎确诊病例'): #开始处理确诊部分
-            if self.move_block_pointer('病例(\d+)'):
+            if self.move_block_pointer('^病例(\d+)'):
                 find_close, close_line = self.find_block_num('病例\d+', reverse=True)
-                print(close_line, self.text_list[close_line])
+#                print(close_line, self.text_list[close_line])
                 self.patient_details = Cleaning_district_block(self.date, '病例') #初始化block
                 self.district_details_type = self.patient_details.get_district_details_type() #先放在这里，逻辑有点奇怪
                 for i in range(self.current_line, close_line):
@@ -188,7 +210,7 @@ class Report_parse():
                     self.patient_details_close_line = self.text_list[close_line]  #已追踪到以上病例在本市的密切接触者53人
         if self.move_block_pointer('新增本土无症状'):
             #开始处理密接部分
-            if self.move_block_pointer('无症状感染者(\d+)'):
+            if self.move_block_pointer('^无症状感染者(\d+)'):
                 find_close, close_line = self.find_block_num('无症状感染者(\d+)', reverse=True)
                 self.nosymptom_details = Cleaning_district_block(self.date, '无症状感染者') #初始化block
                 for i in range(self.current_line, close_line):
@@ -291,7 +313,7 @@ def intialization_writers():
     district_f_2.write(",".join(['date', 'is_patient', 'source', 'number', 'sex', 'age', 'district']) + '\n')
     district_f_3.write(",".join(['date', 'is_patient', 'source', 'district', 'count']) + '\n')
     macro_writer = codecs.open(macro_file, mode = 'w', encoding='utf_8')
-    macro_writer.write(",".join(('时间', '确诊', '无症状', '无症状转确诊', '管控内确诊', '管控内无症状',\
+    macro_writer.write(",".join(('时间', '确诊病例', '无症状感染者', '无症状转确诊', '管控内确诊', '管控内无症状',\
             '例行筛查确诊', '例行筛查无症状', \
             '确诊密接', '无症状密接', \
             '本土医学观察中无症状', '解除医学观察', '本土在院治疗中', '治愈出院', '重症', '死亡\n')))
@@ -308,7 +330,7 @@ def district_writer(district_list, date, report_type):
 
 def get_numbers(f, date_value):
     """
-    return: 市('时间', '确诊', '无症状', '无症状转确诊', '管控内确诊', '管控内无症状',\
+    return: 市('时间', '确诊病例', '无症状感染者', '无症状转确诊', '管控内确诊', '管控内无症状',\
         '确诊密接', '无症状密接', '本土医学观察中无症状', '本土在院治疗中', '治愈出院', '重症', '死亡', '解除医学观察\n')    """
     print(f'reading {file}')
     text = f.readlines()

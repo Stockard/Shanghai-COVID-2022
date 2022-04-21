@@ -1,5 +1,6 @@
 #先处理好旧数据，再加增量数据
 #placeholder
+#在区没有新增地址时会出问题，但是问题不大，暂时不fix
 import pandas as pd
 import codecs
 from config import address_file, geo_file, address_add_file, pre_address_file

@@ -3,6 +3,8 @@
 #清理上海发布每天发布的病例信息 since 3/26/2022 | 3月17日前每个病人都有地址 ｜ 3月18-25日每个病人都有区
 #5号开始地址数据变成微信数据，无法获取
 #卫健委官网没有放的一些日期
+#3月13日 https://mp.weixin.qq.com/s/kdSUGd2xGR6Xx-HfekKUSA
+#3月13日的疫情发布会是下午截止的数据 https://wsjkw.sh.gov.cn/xwfb/20220313/bdd4d48332a248b3a76b5e1ab786daf9.html
 #3月17日	https://mp.weixin.qq.com/s/ZSIDH6G-IIrWUmXKpWGulg
 #3月16日	https://mp.weixin.qq.com/s/J8Ib1MFCWI6vouw5Gz2MiQ
 #3月18日	https://mp.weixin.qq.com/s/OFt7LzeHt8fNl6GqPpkD1g
@@ -70,7 +72,7 @@ def crawl_list(baseurl):
                 save(number_dir, create_date, article, url)
 
 
-@retry(stop_max_attempt_number=9, wait_random_min=10, wait_random_max=20)
+@retry(stop_max_attempt_number=9, wait_random_min=5, wait_random_max=10)
 def parse_notice_detail(url, title):
     """
     解析新闻正文
