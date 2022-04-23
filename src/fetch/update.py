@@ -48,8 +48,8 @@ if __name__ == '__main__':
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36",
     }
-#    for url in baseurl:
-#        crawl_list(url)
+    for url in baseurl:
+        crawl_list(url)
     #exact address
     writer(district_file, data_colnames['district'][1], is_title = 1)
     writer(address_file, data_colnames['address'][1], is_title = 1)
