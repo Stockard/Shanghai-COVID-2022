@@ -40,16 +40,13 @@ def writer(file, strings, is_title = 0, batch = 0):
         with codecs.open(file, mode = m, encoding = 'utf-8') as handler:
             handler.write(strings)
 
+def openfile(file, mode = 'r'):
+    return codecs.open(file, mode = mode, encoding='utf_8')
 
 if __name__ == '__main__':
     #crawl_data
     baseurl = ['https://wsjkw.sh.gov.cn/yqtb/index.html']
-    prefixurl = 'https://wsjkw.sh.gov.cn/'
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36",
-    }
-    for url in baseurl:
-        crawl_list(url)
+    crawler_top(baseurl)
     #exact address
     writer(district_file, data_colnames['district'][1], is_title = 1)
     writer(address_file, data_colnames['address'][1], is_title = 1)
@@ -59,11 +56,11 @@ if __name__ == '__main__':
             continue
         print(f'now opeing {file}')
         date_value = file
-        f = codecs.open(address_dir + file, mode='r', encoding='utf_8')
-        address_list, district_list = parse(f, date_value)
+        handler = openfile(address_dir + file)
+        address_list, district_list = parse(handler, date_value)
+        handler.close()
         writer(address_file, address_list, batch=1)
         writer(district_file, district_list, batch=1)
-        f.close()
     #tidy address
     print('tidy address')
     address = pd.read_csv(address_file, encoding = 'utf-8')
@@ -91,9 +88,9 @@ if __name__ == '__main__':
     writer(district_details_t3, data_colnames['district_details_t3'][1], is_title=1)
     writer(district_in_hospital_file, data_colnames['district_in_hospital'][1], is_title = 1)
     for file in file_list:
-        f = codecs.open(number_dir + file, mode = 'r', encoding='utf_8')
-        date, result, district_list, report_type, district_in_hospital = get_numbers(f, file)
-        f.close()
+        handler = openfile(number_dir + file)
+        date, result, district_list, report_type, district_in_hospital = get_numbers(handler, file)
+        handler.close()
         writer(macro_file, result)
         writer(district_in_hospital_file, district_in_hospital, batch=1)
         for i in district_list:

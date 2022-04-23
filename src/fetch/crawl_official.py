@@ -22,16 +22,19 @@ from newspaper import Article
 from retrying import retry
 from config import address_dir, number_dir
 
-baseurl = ['https://wsjkw.sh.gov.cn/yqtb/index.html']
-prefixurl = 'https://wsjkw.sh.gov.cn/'
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36",
-}
+
+
+def crawler_top(url_list):
+    for url in url_list:
+        crawl_list(url)
 
 def crawl_list(baseurl):
     """
     解析列表
     """
+    prefixurl = 'https://wsjkw.sh.gov.cn/'
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36"}
+
     date_pattern = '((\d{1,2})月(\d{1,2})日)'
     address_pattern = '居住地信息'
 
@@ -104,5 +107,5 @@ def save(dir, create_date, article, url):
         f.close()
 
 if __name__ == '__main__':
-    for url in baseurl:
-        crawl_list(url)
+    baseurl = ['https://wsjkw.sh.gov.cn/yqtb/index.html']
+    crawler_top(baseurl)
