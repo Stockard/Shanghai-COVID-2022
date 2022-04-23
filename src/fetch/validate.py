@@ -10,7 +10,11 @@ def check_data_integrity():
         for date in sum_district['date'].unique():
             value_in_macro = int(macro[macro['时间'] == date][is_patient])
             value_in_district_agg = int(sum_district[(sum_district['date'] == date) & (sum_district['is_patient'] == is_patient)]['count'])
-            assert(value_in_macro == value_in_district_agg)
+            try:
+                assert(value_in_macro == value_in_district_agg)
+            except Exception as e:
+                print(value_in_macro, value_in_district_agg)
+                print('请检查 %s 数据' % date, e)
     for index, values in macro.iterrows(): #核验确诊数和无症状数分项 主要是3月18日前的
         try:
             assert(values['确诊病例'] == values['无症状转确诊'] + values['管控内确诊'] + values['例行筛查确诊'] + values['野生确诊'])

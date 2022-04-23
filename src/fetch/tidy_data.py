@@ -11,9 +11,7 @@ from os import listdir
 import pandas
 from config import address_dir, number_dir
 from config import temp_macro_file as macro_file
-from config import district_file, address_file, district_details_t2, district_details_t3
-from convert_date import get_report_type
-from convert_date import convert_date_string_to_excel_ordinal
+from config import district_file, address_file, district_details_t2, district_details_t3, district_in_hospital_file
 
 ALLOW_SKIP= 1
 
@@ -169,6 +167,7 @@ class Report_parse():
         outside_patient, outside_nosymptom,
         patient_close, nosymptom_close,
         nosymptom_control, leave_nosymptom_control, in_hospital, heal, serious, dead
+        in_hospital_by_district
     """
     def __init__(self, date, text_list):
         self.text_list = text_list
@@ -191,6 +190,9 @@ class Report_parse():
     def get_district_details_type(self):
         return self.district_details_type
 
+    def get_district_in_hospital(self):
+        return self.district_in_hospital
+
     def structure(self):
         #intialization
         self.first_line = ''
@@ -201,6 +203,7 @@ class Report_parse():
         self.in_hospital = '' #治疗行
         self.in_control = '' #在院留观
         self.leave_control = '' #解除隔离
+        self.in_hospital_district = '' #在院治疗确诊病例
 
         if self.move_block_pointer('市卫健委'): #获得首行
             self.first_line = self.text_list[self.current_line]
@@ -226,6 +229,7 @@ class Report_parse():
         self.in_hospital = self.get_block('在院治疗') #累计本土确诊707例，治愈出院476例，在院治疗224例，死亡7例。
         self.in_control = self.get_block('尚在医学观察中的') #尚在医学观察中的无症状感染者8711例，其中本土无症状感染者8674
         self.leave_control = self.get_block('解除医学观察') #其中本土无症状感染者102例，境外输入性无症状感染者8例。
+        self.in_hospital_district = self.get_block('在院治疗确诊病例') #其中本土无症状感染者102例，境外输入性无症状感染者8例。
 
     def parse(self):
         numbers_first = self.parse_first_line()
@@ -236,6 +240,7 @@ class Report_parse():
 #        outside_patient = str(int(patients) - int(nosymptom_to_patient) - int(patient_findallin_control))
 #        outside_nosymptom = str(int(nosymptom) - int(nosymptom_findallin_control))
         self.numbers = (*numbers_first, outside_patient, outside_nosymptom, *numbers_second)
+        self.parse_district_in_hospital()
 
     def parse_first_line(self):
         patient_outside = "0" # 野生确诊默认为0
@@ -252,6 +257,12 @@ class Report_parse():
         self.district_details = []
         self.district_details += self.patient_details.export()
         self.district_details += self.nosymptom_details.export()
+
+
+    def parse_district_in_hospital(self):
+        pattern = '([浦东｜黄浦｜徐汇｜长宁｜静安｜普陀｜虹口｜杨浦｜闵行｜宝山｜嘉定｜金山｜松江｜青浦｜奉贤｜崇明]+) (\d+)'
+        in_hospital_by_district = re.findall(pattern, self.in_hospital_district)
+        self.district_in_hospital = [(self.date, i, j) for i, j in in_hospital_by_district]
 
     def parse_separate_lines(self):
         patient_close = find_patterns(self.patient_details_close_line, '密切接触者(\d+)', ALLOW_SKIP)
@@ -313,7 +324,6 @@ class Report_parse():
                     break
         return find_text, line_num
 
-
 def intialization_writers():
     district_f_2 = codecs.open(district_details_t2, mode = 'w', encoding='utf_8')
     district_f_3 = codecs.open(district_details_t3, mode = 'w', encoding='utf_8')
@@ -324,37 +334,37 @@ def intialization_writers():
             '例行筛查确诊', '例行筛查无症状', \
             '确诊密接', '无症状密接', \
             '本土医学观察中无症状', '解除医学观察', '本土在院治疗中', '治愈出院', '重症', '死亡\n')))
-    return district_f_2, district_f_3, macro_writer
 
-def district_writer(district_list, date, report_type):
-    #把分区数据写入文件
-    if report_type == 2:
-        writer = district_f_2
-    elif report_type == 3:
-        writer = district_f_3
-    for i in district_list:
-        writer.write(date + "," + ",".join(i) + '\n')
+    district_in_hospital_writer = codecs.open(district_in_hospital_file, mode = 'w', encoding='utf_8')
+    district_in_hospital_writer.write(",".join((['date', 'district', 'in_hospital'])) + '\n')
+    return district_f_2, district_f_3, macro_writer, district_in_hospital_writer
+
+
 
 def get_numbers(f, date_value):
     """
     return: 市('时间', '确诊病例', '无症状感染者', '无症状转确诊', '野生确诊', '管控内确诊', '管控内无症状',\
         '确诊密接', '无症状密接', '本土医学观察中无症状', '本土在院治疗中', '治愈出院', '重症', '死亡', '解除医学观察\n')    """
-    print(f'reading {file}')
+#    print(f'reading {f}')
     text = f.readlines()
     report = Report_parse(date_value, text)
     district_list = report.get_district_details()
     result = (date_value, *(report.get_macro_numbers()))
+    district_in_hospital = report.get_district_in_hospital()
     report_type = report.get_district_details_type()
-    district_writer(district_list, date_value, report_type)
-    return result, district_list
+    return date_value, result, district_list, report_type, district_in_hospital
 
 if __name__ == '__main__':
     file_list = filter_list()
-    district_f_2, district_f_3, macro_writer = intialization_writers()
+    district_f_2, district_f_3, macro_writer, district_in_hospital_writer = intialization_writers()
+    district_writer = {2: (district_f_2, district_details_t2), 3: (district_f_3, district_details_t3)}
     for file in file_list:
         f = codecs.open(number_dir + file, mode = 'r', encoding='utf_8')
-        result, district_list = get_numbers(f, file)
+        date, result, district_list, report_type, district_in_hospital = get_numbers(f, file)
+        for i in district_list:
+            district_writer[report_type][0].write(date + "," + ",".join(i) + '\n')
         macro_writer.write(",".join(result) + '\n')
+        print(district_in_hospital)
         f.close()
     macro_writer.close()
     district_f_2.close()

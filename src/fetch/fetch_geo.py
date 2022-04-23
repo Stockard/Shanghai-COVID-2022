@@ -3,7 +3,6 @@ import requests
 import pandas as pd
 import csv
 import time
-from retrying import retry
 
 from lnglat_transform import Lnglat_transform
 from lnglat_transform import data_split_to_float
@@ -39,6 +38,7 @@ def address_to_geo(data, cnt):
             req = req.json()
         except Exception as e:
             print(e)
+            continue
         # print(req)
         if req['infocode'] == '10000':
             try:

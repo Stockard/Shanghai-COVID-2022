@@ -55,6 +55,7 @@ def merge_address():
     address = pd.read_csv(address_file) #
     pre_address = pd.read_csv(pre_patient_file) #3月18日之前
     address = pd.concat([address, pre_address[['date', 'address', 'district']]])
+#    address.drop_duplicates(['date', 'address', 'district'], inplace=True)
     address.to_csv(address_cleaned_file, index = False)
 
 if __name__ == '__main__':
