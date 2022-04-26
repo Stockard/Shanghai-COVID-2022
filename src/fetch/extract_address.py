@@ -4,7 +4,7 @@ import codecs
 import re
 from os import listdir
 
-from config import district_file, address_file, address_dir, number_dir
+from config import district_daily_file, address_file, address_dir, number_dir
 
 def parse(f, date_value):
     districts = ['宝山区\n','崇明区\n','奉贤区\n','虹口区\n','黄浦区\n','嘉定区\n','金山区\n','静安区\n','闵行区\n','浦东新区\n','普陀区\n','青浦区\n','松江区\n','徐汇区\n','杨浦区\n','长宁区\n']
@@ -28,6 +28,8 @@ def parse(f, date_value):
     return address_list, district_list
 
 def parse_district(file, district, date_value):
+    districts = ['宝山区\n', '崇明区\n', '奉贤区\n', '虹口区\n', '黄浦区\n', '嘉定区\n', '金山区\n', '静安区\n', '闵行区\n', '浦东新区\n', '普陀区\n',
+                 '青浦区\n', '松江区\n', '徐汇区\n', '杨浦区\n', '长宁区\n']
     end = '消毒'
     address_list = []
     district_list = []
@@ -35,10 +37,10 @@ def parse_district(file, district, date_value):
     while (line == '\n' or line == '（滑动查看更多↓）\n'):
         line = file.readline()
 #    if not check_exist(date_value, list_district_exist):
-    cases = re.findall('(\d+)例本土确诊病例，新增(\d+)例本土无症状感染', line[:-1])
+    cases = re.findall('(\d+)例本土确诊病例.*(\d+)例本土无症状感染', line[:-1])
     if len(cases) > 0:
         district_list.append((date_value, cases[0][0], cases[0][1], district))
-    while (line and line.find(end) < 0):
+    while (line and line.find(end) < 0 and line not in districts):
         line = file.readline()
         if line != '\n' and (line.find(end) < 0):
             address_list.append((date_value, line[:-1], district))
@@ -80,7 +82,7 @@ def build_exist_date(file):
     return date_list
 
 if __name__ == '__main__':
-    districts_writer = codecs.open(district_file, mode = 'w', encoding = 'utf-8')
+    districts_writer = codecs.open(district_daily_file, mode = 'w', encoding = 'utf-8')
     address_writer = codecs.open(address_file, mode = 'w', encoding = 'utf-8')
     address_writer.write('date,address,district\n')
     districts_writer.write('date,patient,nosymptom,district\n')

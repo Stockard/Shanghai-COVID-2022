@@ -7,7 +7,7 @@ use_dir = 'data/use'
 #setup
 address_dir = "%s/address/" % raw_dir
 number_dir = "%s/number/" % raw_dir
-district_file = '%s/districts_daily.csv' % temp_dir
+district_daily_file = '%s/districts_daily.csv' % temp_dir
 address_file =  '%s/address_daily.csv' % temp_dir
 
 #导出数据

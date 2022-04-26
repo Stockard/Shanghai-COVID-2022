@@ -20,7 +20,7 @@ data_colnames ={
     'macro':['宏观数据',('时间', '确诊病例', '无症状感染者', '无症状转确诊', '野生确诊', '管控内确诊', '管控内无症状',
             '例行筛查确诊', '例行筛查无症状', \
             '确诊密接', '无症状密接', \
-            '本土医学观察中无症状', '解除医学观察', '本土在院治疗中', '治愈出院', '重症', '死亡')],
+            '本土医学观察中无症状', '解除医学观察', '本土在院治疗中', '治愈出院', '重症', '死亡', '重型', '危重型')],
     'district_in_hospital':['区确诊人数',('date', 'district', 'in_hospital')]
 }
 
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     baseurl = ['https://wsjkw.sh.gov.cn/yqtb/index.html']
     crawler_top(baseurl)
     #exact address
-    writer(district_file, data_colnames['district'][1], is_title = 1)
+    writer(district_daily_file, data_colnames['district'][1], is_title = 1)
     writer(address_file, data_colnames['address'][1], is_title = 1)
     filelist = listdir(address_dir)
     for file in filelist:
@@ -61,7 +61,7 @@ if __name__ == '__main__':
         address_list, district_list = parse(handler, date_value)
         handler.close()
         writer(address_file, address_list, batch=1)
-        writer(district_file, district_list, batch=1)
+        writer(district_daily_file, district_list, batch=1)
     #tidy address
     print('tidy address')
     address = pd.read_csv(address_file, encoding = 'utf-8')
@@ -85,6 +85,7 @@ if __name__ == '__main__':
     #tidy data
     file_list = filter_list()
     district_writer = {2: district_details_t2, 3:district_details_t3}
+    writer(temp_macro_file, data_colnames['macro'][1], is_title = 1)
     writer(district_details_t2, data_colnames['district_details_t2'][1], is_title=1)
     writer(district_details_t3, data_colnames['district_details_t3'][1], is_title=1)
     writer(district_in_hospital_file, data_colnames['district_in_hospital'][1], is_title = 1)
@@ -92,7 +93,7 @@ if __name__ == '__main__':
         handler = openfile(number_dir + file)
         date, result, district_list, report_type, district_in_hospital = get_numbers(handler, file)
         handler.close()
-        writer(macro_file, result)
+        writer(temp_macro_file, result)
         writer(district_in_hospital_file, district_in_hospital, batch=1)
         for i in district_list:
             writer(district_writer[report_type], (date, *i))

@@ -166,7 +166,7 @@ class Report_parse():
         numbers: patients, nosymptom, nosymptom_to_patient, patient_findallin_control, nosymptom_findallin_control,
         outside_patient, outside_nosymptom,
         patient_close, nosymptom_close,
-        nosymptom_control, leave_nosymptom_control, in_hospital, heal, serious, dead
+        nosymptom_control, leave_nosymptom_control, in_hospital, heal, serious, dead, serious_l1, serious_l2
         in_hospital_by_district
     """
     def __init__(self, date, text_list):
@@ -274,11 +274,15 @@ class Report_parse():
             in_hospital = find_patterns(self.in_hospital, '在院治疗(\d+)')
             serious = find_patterns(self.in_hospital, '重症(\d+)', ALLOW_SKIP)
             dead = find_patterns(self.in_hospital, '死亡(\d+)', ALLOW_SKIP)
+            serious_l1 = find_patterns(self.in_hospital, '[^危]重型(\d+)', ALLOW_SKIP)
+            serious_l2 = find_patterns(self.in_hospital, '危重型(\d+)', ALLOW_SKIP)
+            if serious_l1 != "":
+                serious = str(int(serious_l1) + int(serious_l2))
         nosymptom_to_patient = 0
         if int(self.date) < 20220414: #治愈出院调整 2022溺爱4月14日后变成累计数
             heal = str(int(heal) - 385)
         return (patient_close, nosymptom_close, \
-                nosymptom_control, leave_nosymptom_control, in_hospital, heal, serious, dead)
+                nosymptom_control, leave_nosymptom_control, in_hospital, heal, serious, dead, serious_l1, serious_l2)
 
     def check_flags(self):
         self.flags['first_line'] = self.first_line != ""
@@ -333,7 +337,7 @@ def intialization_writers():
     macro_writer.write(",".join(('时间', '确诊病例', '无症状感染者', '无症状转确诊', '野生确诊', '管控内确诊', '管控内无症状',\
             '例行筛查确诊', '例行筛查无症状', \
             '确诊密接', '无症状密接', \
-            '本土医学观察中无症状', '解除医学观察', '本土在院治疗中', '治愈出院', '重症', '死亡\n')))
+            '本土医学观察中无症状', '解除医学观察', '本土在院治疗中', '治愈出院', '重症', '死亡', '重型', '危重型', '\n')))
 
     district_in_hospital_writer = codecs.open(district_in_hospital_file, mode = 'w', encoding='utf_8')
     district_in_hospital_writer.write(",".join((['date', 'district', 'in_hospital'])) + '\n')
