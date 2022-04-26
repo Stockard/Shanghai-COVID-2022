@@ -118,4 +118,5 @@ if __name__ == '__main__':
     merge_geo_data()
     merge_address()
     check_data_integrity()
+    merge_address_geo()
 

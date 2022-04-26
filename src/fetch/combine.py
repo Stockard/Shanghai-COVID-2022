@@ -4,7 +4,7 @@ from validate import check_data_integrity
 from config import pre_macro_file, temp_macro_file, macro_file
 from config import district_details_t2, district_details_t3, district_file
 from config import geo_file, geo_add_file
-from config import address_file, pre_patient_file, pre_patient_sort_file, address_cleaned_file
+from config import address_file, pre_patient_file, pre_patient_sort_file, address_cleaned_file, merge_geo_address_file
 
 #日，区，无症状/确诊，经纬度度数据
 
@@ -58,10 +58,20 @@ def merge_address():
 #    address.drop_duplicates(['date', 'address', 'district'], inplace=True)
     address.to_csv(address_cleaned_file, index = False)
 
+def merge_address_geo():
+    address = pd.read_csv(address_cleaned_file)
+    geo = pd.read_csv(geo_file)
+    complete_address = pd.merge(address, geo)
+    complete_address['date_value'] = complete_address.date.apply(
+        lambda x: pd.Timestamp(str(x)[:4] + '-' + str(x)[4:6] + '-' + str(x)[6:]))
+    complete_address.groupby(['street_level', 'district']).agg('median')
+    complete_address.to_csv(merge_geo_address_file)
+
 if __name__ == '__main__':
     merge_marcro_data()
     merge_district_data()
     merge_geo_data()
     merge_address()
+    merge_address_geo()
 #    check()
     check_data_integrity()
