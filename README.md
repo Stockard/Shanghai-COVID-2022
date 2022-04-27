@@ -3,7 +3,7 @@
 Data Sharing Portal - 半自动化的上海疫情数据更新工具，包括市级数据，区级数据，地址数据，每天只需要五分钟即可更新。
 清理完毕的数据在 data/use/里
 
-该项目是2020年[Glacier Data](https://github.com/Glacier-Ice/Covid-19-data-science)及其讨论的继承项目。
+该项目是2020年疫情数据开放小组[Glacier Data](https://github.com/Glacier-Ice/Covid-19-data-science)及其讨论的继承项目。
 
 最新的工作流见[Notion链接](https://stockard-halfway.notion.site/9aace6bd589c490f8015f98d87ea735f?v=7b2a1b31be1a469d9f373e1cb0e59f0d)
 
