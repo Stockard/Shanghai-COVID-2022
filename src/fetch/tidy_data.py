@@ -193,6 +193,9 @@ class Report_parse():
     def get_district_in_hospital(self):
         return self.district_in_hospital
 
+    def get_death(self):
+        return self.death
+
     def structure(self):
         #intialization
         self.first_line = ''
@@ -204,9 +207,13 @@ class Report_parse():
         self.in_control = '' #在院留观
         self.leave_control = '' #解除隔离
         self.in_hospital_district = '' #在院治疗确诊病例
+        self.death = '' #单独的死亡行
 
         if self.move_block_pointer('市卫健委'): #获得首行
             self.first_line = self.text_list[self.current_line]
+        find_text, line_num = self.find_block_num("本土死亡[病例(\d+)|(\d+)]")  #4月27日后死亡部分提前
+        if find_text:
+            self.death = self.text_list[line_num]
         if self.move_block_pointer('新增本土新冠肺炎确诊病例'): #开始处理确诊部分
             if self.move_block_pointer('^病例(\d+)'):
                 find_close, close_line = self.find_block_num('病例\d+', reverse=True)
@@ -245,10 +252,10 @@ class Report_parse():
     def parse_first_line(self):
         patient_outside = "0" # 野生确诊默认为0
         patients, nosymptom, nosymptom_to_patient, patient_findallin_control, nosymptom_findallin_control = [0, 0, 0, 0, 0]
-        patients = find_patterns(self.first_line, '新增本土新冠肺炎确诊病例(\d+)[例|]')  #其中本土无症状感染者102例，境外输入性无症状感染者8例。
+        patients = find_patterns(self.first_line, '新增本土新冠肺炎确诊病例(\d+)')  #其中本土无症状感染者102例，境外输入性无症状感染者8例。
         nosymptom = find_patterns(self.first_line, '无症状感染者(\d+)例')  #其中本土无症状感染者102例，境外输入性无症状感染者8例。
         nosymptom_to_patient = find_patterns(self.first_line, '(\d+)例确诊病例为此前无症状感染者转归', ALLOW_SKIP)  #其中本土无症状感染者102例，境外输入性无症状感染者8例。
-        if nosymptom_to_patient == "0":
+        if nosymptom_to_patient == "":
             nosymptom_to_patient = find_patterns(self.first_line, '无症状感染者转为确诊病例(\d+)', ALLOW_SKIP)  #其中本土无症状感染者102例，境外输入性无症状感染者8例。
         (patient_findallin_control, nosymptom_findallin_control) = find_patterns(self.first_line, '(\d+)例确诊病例和(\d+)例无症状感染者在隔离管控中')
         return (patients, nosymptom, nosymptom_to_patient, patient_outside, patient_findallin_control, nosymptom_findallin_control)
@@ -269,11 +276,14 @@ class Report_parse():
         nosymptom_close = find_patterns(self.nosymptom_details_close_line, '密切接触者(\d+)', ALLOW_SKIP)
         leave_nosymptom_control = find_patterns(self.leave_control, '本土无症状感染者(\d+)', ALLOW_SKIP)
         nosymptom_control = find_patterns(self.in_control, '本土无症状感染者(\d+)', ALLOW_SKIP)
+        if self.death == "" and int(self.date) > 20220411:
+            dead = find_patterns(self.in_hospital, '死亡(\d+)', ALLOW_SKIP)
+        else:
+            dead = find_patterns(self.death, '死亡[\u4e00-\u9fa5]{0,2}(\d+)', ALLOW_SKIP)
         if self.in_hospital != "":
             heal = find_patterns(self.in_hospital, '治愈出院(\d+)')
             in_hospital = find_patterns(self.in_hospital, '在院治疗(\d+)')
             serious = find_patterns(self.in_hospital, '重症(\d+)', ALLOW_SKIP)
-            dead = find_patterns(self.in_hospital, '死亡(\d+)', ALLOW_SKIP)
             serious_l1 = find_patterns(self.in_hospital, '[^危]重型(\d+)', ALLOW_SKIP)
             serious_l2 = find_patterns(self.in_hospital, '危重型(\d+)', ALLOW_SKIP)
             if serious_l1 != "":
@@ -368,7 +378,7 @@ if __name__ == '__main__':
         for i in district_list:
             district_writer[report_type][0].write(date + "," + ",".join(i) + '\n')
         macro_writer.write(",".join(result) + '\n')
-        print(district_in_hospital)
+#        print(district_in_hospital)
         f.close()
     macro_writer.close()
     district_f_2.close()
