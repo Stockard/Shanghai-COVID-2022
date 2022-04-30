@@ -100,18 +100,7 @@ if __name__ == '__main__':
 
     #fetch geo
     data = pd.read_csv(address_add_file, engine='python')  # 导入对应地址的csv文件
-    address_to_geo(data, 50)  # 用于控制单次写入文件的内容不超过500条
-    # 将高德经纬度数据转换成wgs标准
-    URL = 'https://restapi.amap.com/v3/geocode/geo?'
-    URL_REGEO = 'https://restapi.amap.com/v3/geocode/regeo'
-    lis = []
-    g = Lnglat_transform()
-    lnglat_df = pd.read_csv(geo_add_temp_file, encoding='utf-8')
-    lnglat_df = data_split_to_float(lnglat_df)
-    gps_df = g.lnglat_batch_map(lnglat_df)
-    #    gps_df = data_concat(gps_df)
-    gps_df = gps_df[['district', 'address', 'complete_address', 'gcj02_lng', 'gcj02_lat', 'wgs84_lng', 'wgs84_lat', 'street_level']]
-    gps_df.to_csv(geo_add_file, encoding='utf-8', index=False)
+    address_to_geo(data, geo_add_file, 50)#用于控制单次写入文件的内容不超过500条
     #combine
     merge_marcro_data()
     merge_district_data()
@@ -119,4 +108,3 @@ if __name__ == '__main__':
     merge_address()
     check_data_integrity()
     merge_address_geo()
-
