@@ -20,7 +20,8 @@ address_cleaned_file = '%s/address.csv' % use_dir
 district_in_hospital_file = '%s/shanghai_district_in_hospital_data.csv' % use_dir
 district_file = '%s/shanghai_district_data.csv' % use_dir
 macro_file = '%s/shanghai_data.csv' % use_dir
-geo_file = '%s/geo.csv' % use_dir
+geo_file = '%s/geo_complete.csv' % use_dir
+geo_simple_file = '%s/geo.csv' % use_dir
 merge_geo_address_file = '%s/daily_address_with_geo.csv' % use_dir
 
 

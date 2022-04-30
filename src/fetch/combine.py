@@ -3,7 +3,7 @@ import pandas as pd
 from validate import check_data_integrity
 from config import pre_macro_file, temp_macro_file, macro_file
 from config import district_details_t2, district_details_t3, district_file
-from config import geo_file, geo_add_file
+from config import geo_file, geo_add_file, geo_simple_file
 from config import address_file, pre_patient_file, pre_patient_sort_file, address_cleaned_file, merge_geo_address_file
 
 #日，区，无症状/确诊，经纬度度数据
@@ -42,11 +42,17 @@ def merge_geo_data():
     # 修改Geo程序为爬取增量
     #汇总增量
     geo = pd.read_csv(geo_file)
+    geo_simple = pd.read_csv(geo_simple_file)
     geo_add = pd.read_csv(geo_add_file)
+
+    geo_add_simple = geo_add[['district', 'address', 'complete_address', 'gcj02_lng','gcj02_lat','wgs84_lng','wgs84_lat','township']]
 
     geo = pd.concat([geo, geo_add], ignore_index = True)
     geo.drop_duplicates('address', inplace = True)
     geo.to_csv(geo_file, index = False)
+    geo_simple = pd.concat([geo_simple, geo_add_simple], ignore_index = True)
+    geo_simple.drop_duplicates('address', inplace = True)
+    geo_simple.to_csv(geo_simple_file, index = False)
     #检查地址数据是否缺失（时间，区），区数据加总是否等于市级别 —— 输出到log
     #汇总病例数和地址数据，用于作图
     # + [location], geo features
@@ -60,11 +66,11 @@ def merge_address():
 
 def merge_address_geo():
     address = pd.read_csv(address_cleaned_file)
-    geo = pd.read_csv(geo_file)
+    geo = pd.read_csv(geo_simple_file)
     complete_address = pd.merge(address, geo)
     complete_address['date_value'] = complete_address.date.apply(
         lambda x: pd.Timestamp(str(x)[:4] + '-' + str(x)[4:6] + '-' + str(x)[6:]))
-    complete_address.groupby(['street_level', 'district']).agg('median')
+    complete_address.groupby(['township', 'district']).agg('median')
     complete_address.to_csv(merge_geo_address_file)
 
 if __name__ == '__main__':
