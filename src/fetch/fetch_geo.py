@@ -51,6 +51,7 @@ def address_to_geo(data, cnt):
                 }
                 req_regeo = requests.get(URL_REGEO, para_regeo)
                 req_regeo = req_regeo.json()
+                print(req_regeo)
                 #这一部分异常判断的逻辑加上之后会报错，暂时注释掉
                 # if req_regeo['infocode'] == '10000':
                 #     try:
