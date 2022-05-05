@@ -8,7 +8,7 @@ from extract_address import parse
 #from tidy_address import list_compare, complete_check
 from tidy_data import get_numbers, filter_list
 from lnglat_transform import Lnglat_transform, data_split_to_float
-from fetch_geo import address_to_geo
+from fetch_geo_new import address_to_geo
 from combine import *
 from validate import check_data_integrity
 
