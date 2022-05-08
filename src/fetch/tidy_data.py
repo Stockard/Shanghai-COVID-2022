@@ -257,6 +257,8 @@ class Report_parse():
         nosymptom_to_patient = find_patterns(self.first_line, '(\d+)例确诊病例为此前无症状感染者转归', ALLOW_SKIP)  #其中本土无症状感染者102例，境外输入性无症状感染者8例。
         if nosymptom_to_patient == "":
             nosymptom_to_patient = find_patterns(self.first_line, '无症状感染者转为确诊病例(\d+)', ALLOW_SKIP)  #其中本土无症状感染者102例，境外输入性无症状感染者8例。
+        if nosymptom_to_patient == "":
+            nosymptom_to_patient = find_patterns(self.first_line, '(\d+)例确诊病例为既往无症状感染者转归', ALLOW_SKIP)  #其中本土无症状感染者102例，境外输入性无症状感染者8例。
         (patient_findallin_control, nosymptom_findallin_control) = find_patterns(self.first_line, '(\d+)例确诊病例和(\d+)例无症状感染者在隔离管控中')
         return (patients, nosymptom, nosymptom_to_patient, patient_outside, patient_findallin_control, nosymptom_findallin_control)
 
