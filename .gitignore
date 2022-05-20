@@ -1,0 +1,40 @@
+
+data/archieve/上海3月确诊_无症状_地址 - 3月17日-3月25日.xlsx
+data/archieve/上海3月确诊_无症状_地址-孔方 .xlsx
+data/archieve/上海3月确诊_无症状_地址-孔方-清理 .xlsx
+data/archieve/上海病例数-宏观.xlsx
+data/archieve/patient_0301_0306.txt
+data/archieve/.DS_Store
+data/archieve/patient_0301_0306.txt
+data/tableau/上海病例.xlsx
+data/tableau/确诊人数.xlsx
+data/tableau/经纬度包含街道.xlsx
+data/use_backup/.DS_Store
+run.sh
+src/.DS_Store
+Untitled.ipynb
+.ipynb_checkpoints/*
+data/.DS_Store
+src/fetch/__pycache__/config.cpython-37.pyc
+src/fetch/__pycache__/config.cpython-37.pyc
+*.pyc
+src/fetch/keys.py
+*.xml
+*.iml
+src/fetch/.ipynb_checkpoints/*
+data/archieve/~$上海病例数-宏观.xlsx
+*.rar
+data/map/CN_Vallige_2021_Shanghai/CN_Vallige_2021_Shanghai.dbf
+data/map/CN_Vallige_2021_Shanghai/CN_Vallige_2021_Shanghai.prj
+*.sbn
+*.sbx
+*.shp
+*.shx
+*.dbf
+*.prj
+*.shp
+data/map/shanghai_street.shp
+data/map/shanghai_street.shp
+*.shp
+data/raw/.DS_Store
+data/.DS_Store

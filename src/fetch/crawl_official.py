@@ -9,6 +9,7 @@
 #3月16日	https://mp.weixin.qq.com/s/J8Ib1MFCWI6vouw5Gz2MiQ
 #3月18日	https://mp.weixin.qq.com/s/OFt7LzeHt8fNl6GqPpkD1g
 #3月18日	https://mp.weixin.qq.com/s/xLVPnOTErTe3dmAenUyDGQ
+#5月17日 https://wsjkw.sh.gov.cn/xwfb/20220518/cb9dfdc2fff84ed78bde22ef3e6dcf0b.html 疫情数据
 #https://wsjkw.sh.gov.cn/yqtb/index.html
 
 import re
